@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 端口与 docker-compose.yml 的映射保持一致；本机端口被占用时改映射并同步改此处
+    url: jdbc:mysql://localhost:3306/venue_flow?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf-8
+    username: root
+    password: "123456"
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    # 学习期开 SQL 日志：压测时能亲眼看到"缓存命中后 SQL 消失"
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+venue-flow:
+  # true = 开放"翻车版"秒杀接口 + 验证码回显（压测看超卖用，生产绝不）
+  unsafe: false
+  # 展馆详情缓存策略，三挡可切换压测对比：pass-through | mutex | logical-expire
+  cache-mode: pass-through

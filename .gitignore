@@ -1,0 +1,9 @@
+target/
+.idea/
+*.iml
+.vscode/
+logs/
+*.log
+.DS_Store
+# 压测产物（批量生成的临时账号 token），不进仓库
+scripts/tokens.txt

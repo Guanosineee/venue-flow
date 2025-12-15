@@ -1,0 +1,41 @@
+# 展遇本地环境一键拉起（WSL2: wsl docker compose up -d）
+# ⭐面试点：compose = YAML 定义多容器、一条命令拉栈；volume 做持久化
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: venue-flow-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_DATABASE: venue_flow
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      # 首次启动自动执行建表+造数（mysql 官方镜像的约定目录）
+      - ./sql:/docker-entrypoint-initdb.d
+      - mysql-data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  redis:
+    image: redis:7
+    container_name: venue-flow-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    # appendonly = RDB 之外的 AOF 持久化，每秒刷盘，最多丢 1 秒
+    command: redis-server --appendonly yes
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: venue-flow-mq
+    ports:
+      - "5672:5672"    # AMQP 协议口
+      - "15672:15672"  # 管理控制台 http://localhost:15672 guest/guest
+    volumes:
+      - mq-data:/var/lib/rabbitmq
+
+volumes:
+  mysql-data:
+  redis-data:
+  mq-data:
