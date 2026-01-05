@@ -12,6 +12,12 @@ spring:
     redis:
       host: localhost
       port: 6379
+      lettuce:
+        pool:                      # v2 迭代：连接池（配合 RedisPoolConfig 关闭共享单连接）
+          enabled: true
+          max-active: 32
+          max-idle: 32
+          min-idle: 8
   rabbitmq:
     host: localhost
     port: 5672
@@ -26,6 +32,6 @@ mybatis-plus:
 
 venue-flow:
   # true = 开放"翻车版"秒杀接口 + 验证码回显（压测看超卖用，生产绝不）
-  unsafe: false
+  unsafe: true
   # 展馆详情缓存策略，三挡可切换压测对比：pass-through | mutex | logical-expire
   cache-mode: pass-through
