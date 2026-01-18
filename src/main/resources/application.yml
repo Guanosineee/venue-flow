@@ -23,6 +23,14 @@ spring:
     port: 5672
     username: guest
     password: guest
+    # ⭐丢失三环节之①生产端 confirm：broker 收到回 ack，等不到=发丢了（配合 RabbitTemplate 的 ConfirmCallback 记日志/重发）
+    publisher-confirm-type: correlated
+    # 路由不到队列时回调 ReturnsCallback（配合 mandatory）
+    publisher-returns: true
+    listener:
+      simple:
+        # ⭐消费失败不重回队列（防无限重投循环）→ 交给 order.queue 的死信交换机进 order.dlx.queue 人工/补偿处理
+        default-requeue-rejected: false
 
 mybatis-plus:
   configuration:
